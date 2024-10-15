@@ -23,48 +23,46 @@ interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   event: Event | null; 
+  onEventBooked: (eventId: number) => void;
 }
 
-const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, event }) => {
+const BookingModal: React.FC<BookingModalProps> = ({ isOpen, onClose, event, onEventBooked }) => {
   const [bookedBy, setBookedBy] = React.useState("");
   const [email, setEmail] = React.useState("");
 
   const handleSubmit = async () => {
     if (event) {
       const bookingInfo = {
-        eventId: event.id, 
+        eventId: event.id,
         bookedBy,
         email,
       };
-
-      console.log(event.id);
-      console.log(bookedBy);
-      console.log(email);
-
+  
       try {
-     
         await bookEvent(bookingInfo);
-        
+  
         // Show success toast
         toast.success("Event booked successfully!", {
           position: "top-center",
           autoClose: 10000,
           closeOnClick: true,
         });
-
+  
+        // Call the function passed from parent to update event status
+        onEventBooked(event.id);
+  
         setBookedBy("");
         setEmail("");
-    
+  
         onClose();
       } catch (error) {
-    
-     console.log(error);
-     
+        console.error('Error booking event:', error);
       }
     } else {
       console.error("No event selected for booking.");
     }
   };
+  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>

@@ -19,6 +19,11 @@ interface BookingInfo {
     name:string,
     date:string
   }
+  interface updateEvent{
+    id :number,
+    name : string,
+    date : string,
+  }
 
 export const getEvents = async () => {
     try {
@@ -78,5 +83,27 @@ export const getEvents = async () => {
         })
 
         console.log(response.data);
+  }
+
+  export const updateEvent = async ({id , name , date }:updateEvent)=>{
+    try {
+      const response = await axios.put(`${API_URL}/update`,{
+        id ,
+        name , 
+        date
+      })
+      console.log('Event updated successfully:', response.data);
+    }
+    catch(error)
+    {
+      if (axios.isAxiosError(error)) {
+
+        console.error('Error  upadting event:', error.response?.data || error.message);
+      } else {
+ 
+        console.error('Error updating event:', error);
+      }
+
+    }
   }
   
